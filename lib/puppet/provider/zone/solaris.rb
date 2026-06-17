@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+require 'shellwords'
+
 Puppet::Type.type(:zone).provide(:solaris) do
   desc "Provider for Solaris zones."
 
@@ -114,27 +116,16 @@ Puppet::Type.type(:zone).provide(:solaris) do
 
 
   def install(dummy_argument=:work_arround_for_ruby_GC_bug)
-    if ['5.11'].include? Facter.value(:kernelrelease)
-      if !@resource[:install_args] and @resource[:config_profile]
-        @resource[:install_args] = " -c " + @resource[:config_profile]
-      elsif !@resource[:install_args] and @resource[:archive]
-        @resource[:install_args] = " -a " + @resource[:archive]
-        if @resource[:archived_zonename]
-          @resource[:install_args] << " -z " + @resource[:archived_zonename]
-        end
-      elsif @resource[:config_profile]
-        @resource[:install_args] << " -c " + @resource[:config_profile]
-      end
-    end
+    install_args = build_install_args
 
     if @resource[:clone] # TODO: add support for "-s snapshot"
-      if @resource[:config_profile]
-        zoneadm :clone, @resource[:install_args].split(" "), @resource[:clone]
+      unless install_args.empty?
+        zoneadm :clone, *install_args, @resource[:clone]
       else
         zoneadm :clone, @resource[:clone]
       end
-    elsif @resource[:install_args]
-      zoneadm :install, @resource[:install_args].split(" ")
+    elsif !install_args.empty?
+      zoneadm :install, *install_args
     else
       zoneadm :install
     end
@@ -277,6 +268,21 @@ Puppet::Type.type(:zone).provide(:solaris) do
   end
 
   private
+
+  def build_install_args
+    args = @resource[:install_args] ? Shellwords.split(@resource[:install_args]) : []
+
+    return args unless ['5.11'].include? Facter.value(:kernelrelease)
+
+    if @resource[:config_profile]
+      args += ["-c", @resource[:config_profile]]
+    elsif args.empty? && @resource[:archive]
+      args += ["-a", @resource[:archive]]
+      args += ["-z", @resource[:archived_zonename]] if @resource[:archived_zonename]
+    end
+
+    args
+  end
 
   def zoneadm(*cmd)
     # Execute the zoneadm command with the arguments
