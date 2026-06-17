@@ -65,7 +65,7 @@ Puppet::Type.type(:evs_vport).provide(:solaris) do
         vport_props[:ipaddr] = value
       when "macaddr"
         # macaddr ":" appears to be "\:". change it to ":"
-        vport_props[:macaddr] = value.gsub! "\\:", ":"
+        vport_props[:macaddr] = value.gsub("\\:", ":")
       when "uuid"
         vport_props[:uuid] = value
       end
