@@ -22,10 +22,10 @@ Puppet::Type.type(:link_aggregation).provide(:solaris) do
 
   mk_resource_methods
 
-  class << self
-    attr_accessor :recreated
+  def initialize(value={})
+    super(value)
+    @recreated = false
   end
-  @recreated = false
 
   def self.instances
     persistent = []
@@ -225,7 +225,7 @@ Puppet::Type.type(:link_aggregation).provide(:solaris) do
       create
 
       # Update the property_hash
-      @property_hash.keys do |prop|
+      @property_hash.keys.each do |prop|
         @property_hash[prop] = resource[prop]
       end
 
