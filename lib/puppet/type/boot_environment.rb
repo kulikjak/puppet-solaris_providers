@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-require 'shellwords'
 Puppet::Type.newtype(:boot_environment) do
   @doc = "Manage Oracle Solaris Boot Environments (BEs)"
 
@@ -46,11 +45,6 @@ Puppet::Type.newtype(:boot_environment) do
               properties.  Specify options as a hash.
     Properties are not synchronized after BE creation.
     "
-    munge do |value|
-      value.each_pair do |key,val|
-        value[key] = val.shellescape
-      end
-    end
     validate do |value|
       fail "Invalid must be a Hash" unless value.kind_of?(Hash)
 

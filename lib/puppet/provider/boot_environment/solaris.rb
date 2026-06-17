@@ -91,7 +91,7 @@ Puppet::Type.type(:boot_environment).provide(:solaris) do
     end
 
     if description = @resource[:description]
-      flags << "-d" << "'#{description}'"
+      flags << "-d" << description
     end
 
     if clone_be = @resource[:clone_be]
