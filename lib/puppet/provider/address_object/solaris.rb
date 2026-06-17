@@ -77,9 +77,12 @@ Puppet::Type.type(:address_object).provide(:solaris) do
         :static => [:address,:remote_address,:down],
         :dhcp => [:seconds,:hostname],
         :addrconf => [:interface_id,:remote_interface_id],
+        :vrrp => [:address,:routername],
+        :from_gz => [],
+        :inherited => [],
       }
 
-      type_props[address_type.to_sym].each {|t| hsh[t] ||= :absent }
+      type_props[address_type.to_sym].to_a.each {|t| hsh[t] ||= :absent }
 
       new(hsh)
     end
