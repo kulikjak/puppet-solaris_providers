@@ -217,10 +217,17 @@ Puppet::Type.type(:evs_vport).provide(:solaris) do
     }
     prop_list.each do |key, value|
       next if (value == "") || (value == nil)
-      p << "#{key}=#{value}"
+      p << property_arg(key, value)
     end
     return [] if p.empty?
     Array["-p", p.join(",")]
+  end
+
+  def property_arg(key, value)
+    fail "Invalid VPort property #{key}: commas and newlines are not supported" \
+      if value.to_s =~ /[,\r\n]/
+
+    "#{key}=#{value}"
   end
 
   # Update property change
@@ -231,7 +238,7 @@ Puppet::Type.type(:evs_vport).provide(:solaris) do
     unless @property_flush.empty?
       # update multiple property values iteratively
       @property_flush.each do |key, value|
-        prop = ["-p", "#{key}=#{value}"]
+        prop = ["-p", property_arg(key, value)]
         begin
           set_vportprop(tenant, vport, prop)
         rescue Puppet::ExecutionFailure => e
