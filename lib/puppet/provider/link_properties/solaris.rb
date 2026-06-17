@@ -59,7 +59,8 @@ Puppet::Type.type(:link_properties).provide(:solaris) do
   end
 
   def properties=(value)
-    dladm("set-linkprop", *add_properties(value), @resource[:name])
+    temporary = @resource[:temporary] == :true ? ["-t"] : []
+    dladm("set-linkprop", *temporary, *add_properties(value), @resource[:name])
   end
 
   def add_properties(props=@resource[:properties])

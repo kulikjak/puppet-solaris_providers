@@ -80,9 +80,10 @@ Puppet::Type.type(:interface_properties).provide(:solaris) do
   def properties=(value)
     # Support old style intf/proto names
     name = @resource[:name].split('/')[0]
+    temporary = @resource[:temporary] == :true ? ["-t"] : []
     change_props.each_pair do |proto,props|
       props.each do |prop|
-        ipadm("set-ifprop", "-p", prop, "-m", proto, name)
+        ipadm("set-ifprop", *temporary, "-p", prop, "-m", proto, name)
       end
     end
     @property_hash[:properties].merge(value)
