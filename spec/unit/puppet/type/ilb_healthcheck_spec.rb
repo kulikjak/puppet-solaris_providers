@@ -69,7 +69,7 @@ describe Puppet::Type.type(:ilb_healthcheck) do
     end
     context "rejects test" do
       %w(
-        ssh non/qual/path
+        ssh non/qual/path /path,timeout=1
       ).each do |thing|
         it thing.inspect do
           params[:test] = thing

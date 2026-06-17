@@ -72,7 +72,7 @@ Puppet::Type.newtype(:ilb_healthcheck) do
        0 if the test does not calculate RTT
        -1 for failure
     "
-      newvalues(:tcp,:udp,%r(^/.+))
+      newvalues(:tcp, :udp, %r{\A/[^,\r\n]+\z})
   end
 
   newproperty(:default_ping) do
