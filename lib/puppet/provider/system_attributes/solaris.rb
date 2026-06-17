@@ -115,13 +115,13 @@ Puppet::Type.type(:system_attributes).provide(:solaris) do
       self.av_modified=@resource[:av_modified]
       self.av_quarantined=@resource[:av_quarantined]
 
-      chmod("S=c#{@property_flush[:yes].uniq.join}", @resource[:name])
+      chmod("S=c#{@property_flush[:yes].uniq.join}", @resource[:file])
     else
       unless @property_flush[:yes].empty?
-        chmod("S+c#{@property_flush[:yes].uniq.join}", @resource[:name])
+        chmod("S+c#{@property_flush[:yes].uniq.join}", @resource[:file])
       end
       unless @property_flush[:no].empty?
-        chmod("S-c#{@property_flush[:no].uniq.join}", @resource[:name])
+        chmod("S-c#{@property_flush[:no].uniq.join}", @resource[:file])
       end
     end
     @property_hash.merge!(attributes)
