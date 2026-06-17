@@ -59,14 +59,7 @@ Puppet::Type.type(:zone).provide(:solaris) do
 
     # open zonecfg_export as a file if possible or treat it like a string
     unless @resource[:zonecfg_export].nil? || @resource[:zonecfg_export].empty?
-      begin
-        file = File.open(@resource[:zonecfg_export], "rb")
-        exported_cfg = file.read.gsub(/[\n]\n*\s*/, "; ")
-      rescue
-        exported_cfg = @resource[:zonecfg_export].gsub(/[\n]\n*\s*/, "; ")
-      ensure
-        file.close unless file.nil?
-      end
+      exported_cfg = read_zonecfg_export(@resource[:zonecfg_export])
     end
 
     command = [command(:cfg), "-z", @resource[:name]]
@@ -75,11 +68,11 @@ Puppet::Type.type(:zone).provide(:solaris) do
     # use an archive if specified
     if !@resource[:zonecfg_archive].nil?
       # use the config from the archive
-      create_cmd = "create -a #{@resource[:zonecfg_archive]}"
+      create_cmd = "create -a #{zonecfg_value(@resource[:zonecfg_archive], :zonecfg_archive)}"
 
       # use an archived zone if specified
       if !@resource[:archived_zonename].nil?
-        create_cmd << " -z #{@resource[:archived_zonename]}"
+        create_cmd << " -z #{zonecfg_value(@resource[:archived_zonename], :archived_zonename)}"
       end
 
       subcommands << create_cmd
@@ -277,6 +270,28 @@ Puppet::Type.type(:zone).provide(:solaris) do
   end
 
   private
+
+  def read_zonecfg_export(value)
+    if value.start_with?("/")
+      begin
+        return File.open(value, "rb") { |file| normalize_zonecfg_export(file.read) }
+      rescue SystemCallError => detail
+        fail "Could not read zonecfg_export file #{value}: #{detail}"
+      end
+    end
+
+    normalize_zonecfg_export(value)
+  end
+
+  def normalize_zonecfg_export(value)
+    value.gsub(/[\n]\n*\s*/, "; ")
+  end
+
+  def zonecfg_value(value, label)
+    fail "#{label} cannot contain newlines" if value.to_s =~ /[\r\n]/
+
+    %("#{value.to_s.gsub(/["\\]/) { |char| "\\#{char}" }}")
+  end
 
   def zoneadm(*cmd)
     # Execute the zoneadm command with the arguments
