@@ -40,9 +40,17 @@ Puppet::Type.newtype(:address_properties) do
               address object. See ipadm(8)"
 
     def insync?(is)
-      is = [] if is == :absent or is.nil?
-      return false unless is.length == should.length
-      is.zip(@should).all? {|a, b| property_matches?(a, b) }
+      is = {} if is == :absent or is.nil?
+      should.each_pair do |prop,value|
+        return false unless is.key?(prop)
+        return false unless property_matches?(is[prop],value)
+      end
+      true
+    end
+
+    validate do |value|
+      fail "must be a Hash" unless value.kind_of?(Hash)
+      fail "Hash cannot be empty" if value.empty?
     end
   end
 
