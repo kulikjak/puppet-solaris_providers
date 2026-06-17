@@ -98,12 +98,10 @@ Puppet::Type.type(:address_object).provide(:solaris) do
   end
 
   def enable=(value)
-    # only enable for temporary interfaces
-    return unless temporary == :true
     if value == :true
-      ipadm("enable-addr", "-t", @resource[:name])
+      ipadm("enable-addr", @resource[:name])
     elsif value == :false
-      ipadm("disable-addr", "-t", @resource[:name])
+      ipadm("disable-addr", @resource[:name])
     end
   end
 
