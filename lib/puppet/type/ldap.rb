@@ -393,6 +393,14 @@ Puppet::Type.newtype(:ldap) do
     end
     self.pg = "cred"
     self.prop_type = :astring
+
+    def is_to_s(_currentvalue)
+      "[redacted]"
+    end
+
+    def should_to_s(_newvalue)
+      "[redacted]"
+    end
   end
 
   newproperty(:enable_shadow_update) do
@@ -416,6 +424,14 @@ Puppet::Type.newtype(:ldap) do
     end
     self.pg = "cred"
     self.prop_type = :opaque
+
+    def is_to_s(_currentvalue)
+      "[redacted]"
+    end
+
+    def should_to_s(_newvalue)
+      "[redacted]"
+    end
   end
 
   newproperty(:admin_bind_passwd) do

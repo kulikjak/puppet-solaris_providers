@@ -38,6 +38,7 @@ Puppet::Type.type(:ldap).provide(:solaris,
       fail "LDAP configuration is not availble to non-root users"
     end
     props = {}
+    sensitive_props = [:bind_passwd, :admin_bind_passwd]
     validprops = Puppet::Type.type(:ldap).validproperties
     svcprop("-p", "config", "-p", "cred", Ldap_fmri).split("\n").collect do |line|
       data = line.split()
@@ -51,7 +52,7 @@ Puppet::Type.type(:ldap).provide(:solaris,
       _pg, prop = fullprop.split("/")
       prop = prop.intern
 
-      props[prop] = value if validprops.include? prop
+      props[prop] = value if validprops.include?(prop) && !sensitive_props.include?(prop)
     end
 
     props[:name] = "current"
