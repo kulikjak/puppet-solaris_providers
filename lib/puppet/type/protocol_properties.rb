@@ -61,8 +61,8 @@ Puppet::Type.newtype(:protocol_properties) do
       fail "Invalid, must be a hash" unless hsh.kind_of? Hash
       fail "Invalid, cannot be empty" if hsh.empty?
       hsh.each_pair do |key,value|
-        fail "key #{key} must be a-Z - _" unless key =~ /[\p{Alnum}_-]+/
-        fail "value #{value} must be a-Z - _" unless key =~ /[\p{Alnum}_-]+/
+        fail "key #{key} must be a-Z - _" unless key.to_s =~ /\A[\p{Alnum}_-]+\Z/
+        fail "value #{value} must be a-Z - _" unless value.to_s =~ /\A[\p{Alnum}_-]+\Z/
       end
     end
   end
