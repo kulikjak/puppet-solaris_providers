@@ -84,12 +84,12 @@ Puppet::Type.newtype(:ilb_rule) do
     "
     defaultto 'false'
 
-    newvalues(/true/i,/false/i,%r(/\d+$))
+    newvalues(/\Atrue\z/i,/\Afalse\z/i,%r{\A/\d+\z})
 
     validate do |value|
       # Let newvalues check general input first
       super(value)
-      next unless value =~ %r(/\d+$)
+      next unless value =~ %r{\A/\d+\z}
       fail "Invalid pmask #{value}" unless (0..128).cover?(value.slice(1..-1).to_i)
     end
   end
