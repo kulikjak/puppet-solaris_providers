@@ -12,11 +12,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby:
-          - "2.6.6"
-        gemfile:
-          - Gemfile
-          - Gemfiles/puppet-5.x
+        include:
+          - ruby: "2.6.6"
+            gemfile: Gemfiles/puppet-5.x
+          - ruby: "3.2"
+            gemfile: Gemfiles/puppet-7.x
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
