@@ -6,12 +6,13 @@ group(:development, :test) do
   gem 'puppetlabs_spec_helper', :require => true
   gem 'rspec-puppet', :require => true
   gem 'rspec', :require => false
-  gem 'rake', '>= 12.3.3', :require => false
+  gem 'rake', '>= 13.4.2', :require => false
   gem 'pry', :require => false
   gem 'pry-rescue', :require => false
   gem 'pry-stack_explorer', :require => false
   gem 'psych', :require => false
-  gem 'puppet', '5.5.21', :require => true
+  gem 'puppet', '7.27.0', :require => true
+  gem 'ffi', :require => false
   gem 'pkg-config', :require => false
   gem 'semantic_puppet'
   # Docs
