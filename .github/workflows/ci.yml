@@ -35,4 +35,6 @@ jobs:
           bundler-cache: true
 
       - name: Run specs
+        env:
+          SPEC_OPTS: "--format progress"
         run: bundle exec rake "$CHECK"
