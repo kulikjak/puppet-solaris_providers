@@ -6,7 +6,7 @@ on:
 
 jobs:
   spec:
-    name: Ruby ${{ matrix.ruby }} / ${{ matrix.gemfile }}
+    name: Ruby ${{ matrix.ruby }} / ${{ matrix.name }}
     runs-on: ubuntu-22.04
 
     strategy:
@@ -14,14 +14,15 @@ jobs:
       matrix:
         include:
           - ruby: "2.6.6"
+            name: Puppet 5
             gemfile: Gemfiles/puppet-5.x
           - ruby: "3.3"
+            name: Puppet 7
             gemfile: Gemfiles/puppet-7.x
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-      BUNDLE_WITHOUT: acceptance
-      CHECK: spec
+      CHECK: test
 
     steps:
       - name: Checkout
@@ -31,7 +32,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: 2.4.22
           bundler-cache: true
 
       - name: Run specs
