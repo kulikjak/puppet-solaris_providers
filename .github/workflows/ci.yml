@@ -15,7 +15,7 @@ jobs:
         include:
           - ruby: "2.6.6"
             gemfile: Gemfiles/puppet-5.x
-          - ruby: "3.2"
+          - ruby: "3.3"
             gemfile: Gemfiles/puppet-7.x
 
     env:
